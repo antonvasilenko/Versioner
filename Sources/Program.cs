@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Reflection;
-using JetBrains.Annotations;
 using NDesk.Options;
 using System;
 using System.Collections.Generic;
@@ -22,6 +21,13 @@ namespace Versioner
         public bool ShowHelp { get; set; }
     }
 
+    public class Options
+    {
+        public string FilePath { get; set; }
+        public bool ReadMode { get; set; }
+        public Version VersionMask { get; set; }
+    }
+
     public enum Verbosity { Data = 0, Normal = 1, Detailed  = 2 }
 
     class Program
@@ -31,8 +37,7 @@ namespace Versioner
         private static UserInput _userInput;
 
         private static Verbosity _verbosity;
-        private static bool _readMode;
-        private static uint?[] _versionParts;
+        private static Options _options;
 
 
         static void Main(string[] args)
@@ -41,7 +46,7 @@ namespace Versioner
 
             OptionSet options;
             _userInput = ParseStartupOptions(args, out options);
-            var analyzeRes = AnalyzeStartupOptions(_userInput);
+            var analyzeRes = AnalyzeStartupOptions(_userInput, out _options);
 
             if (analyzeRes)
             {
@@ -55,6 +60,7 @@ namespace Versioner
                 Console.WriteLine();
                 Console.WriteLine("Usage: Versioner --file:\"C:\\work\\AssemblyInfo.cs\"  --read --quiet");
                 Console.WriteLine("Usage: Versioner --file:\"C:\\work\\info.plist\"  --update --normal");
+                Console.WriteLine("Usage: Versioner --file:\"C:\\work\\android.manifest\"  --update --normal");
                 Console.WriteLine();
                 options.WriteOptionDescriptions(Console.Out);
                 return;
@@ -65,8 +71,7 @@ namespace Versioner
 
         private static T GetAttribute<T>() where T : Attribute
         {
-            return typeof(Program).GetTypeInfo()
-                .Assembly.GetCustomAttribute<T>();
+            return typeof(Program).Assembly.GetCustomAttribute<T>();
         }
 
         private static OptionSet PrepareOptionsParser(UserInput inputToFill)
@@ -105,8 +110,9 @@ namespace Versioner
             return userInput;
         }
 
-        private static bool AnalyzeStartupOptions(UserInput input)
+        private static bool AnalyzeStartupOptions(UserInput input, out Options options)
         {
+            options = new Options();
             if (input.ShowHelp)
                 return true;
 
@@ -120,6 +126,7 @@ namespace Versioner
                 Console.WriteLine("File '{0}' doesn't exists. Check path in '-f' or '--files", input.FilePath);
                 return false;
             }
+            options.FilePath = input.FilePath;
 
             if (String.IsNullOrWhiteSpace(input.Verbosity))
             {
@@ -151,9 +158,9 @@ namespace Versioner
                 Console.WriteLine("Unexpected execution mode. Allowed values are '{0}')", string.Join(", ", _modes));
                 return false;
             }
-            _readMode = _modes[pos] == "read";
+            options.ReadMode = _modes[pos] == "read";
 
-            if (!_readMode)
+            if (!options.ReadMode)
             {
                 if (String.IsNullOrWhiteSpace(input.VersionMask))
                 {
@@ -191,48 +198,9 @@ namespace Versioner
                     Console.WriteLine(errors.ToString());
                     return false;
                 }
-                _versionParts = numberParts;
+                options.VersionMask = new Version(numberParts);
             }
             return true;
-        }
-    }
-
-    public class Version
-    {
-        public int? A { get; set; }
-        public int? B { get; set; }
-        public int? C { get; set; }
-        public int? D { get; set; }
-    }
-
-    public static class Lo
-    {
-        public static Verbosity Verbosity { get; set; }
-
-        [StringFormatMethod("template")]
-        public static void Data(string template, params object[] args)
-        {
-            if(CanWrite(Verbosity, Verbosity.Data))
-            Console.Write(template, args);
-        }
-
-        [StringFormatMethod("template")]
-        public static void Log(string template, params object[] args)
-        {
-            if (CanWrite(Verbosity, Verbosity.Normal))
-                Console.Write(template, args);
-        }
-
-        [StringFormatMethod("template")]
-        public static void Details(string template, params object[] args)
-        {
-            if (CanWrite(Verbosity, Verbosity.Detailed))
-                Console.Write(template, args);
-        }
-
-        private static bool CanWrite(Verbosity current, Verbosity given)
-        {
-            return ((int) given) <= ((int) current);
         }
     }
 }

@@ -43,9 +43,11 @@
   <ItemGroup>
     <Compile Include="CodeAnnotations.cs" />
     <Compile Include="IVersioner.cs" />
+    <Compile Include="Lo.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Version.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
