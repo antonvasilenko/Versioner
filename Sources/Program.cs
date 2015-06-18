@@ -79,11 +79,11 @@ namespace Versioner
         {
             var opts = inputToFill;
             var lParser = new OptionSet
-			{
+            {
                     {"f|file=", "path to file that contains version (.cs .manifest.xml info.plist)", filePath => opts.FilePath = filePath},
                     {"ver|version=", "version mask to update file with, i.e. 1.0.3.4, *.*.*.1342", v => opts.VersionMask = v},
                     {"m|mode=", string.Format("set the work mode for versioner ({0})", string.Join(" | ", _modes)), m => opts.Mode = m},
-					{"v|verbosity=", string.Format("set output verbosity level ({0})", string.Join(" | ", _verbosities)), v => opts.Verbosity = v}, 
+                    {"v|verbosity=", string.Format("set output verbosity level ({0})", string.Join(" | ", _verbosities)), v => opts.Verbosity = v}, 
                     {"h|?|help", "shows this help message and exit", h=> opts.ShowHelp = h != null}
                 };
             return lParser;
@@ -196,7 +196,8 @@ namespace Versioner
                     handler.Init(_options.FilePath);
                     if (_options.ReadMode)
                     {
-                        handler.FetchVersion();
+                        var version = handler.FetchVersion();
+                        Lo.Data(version.ToString());
                     }
                     else
                     {

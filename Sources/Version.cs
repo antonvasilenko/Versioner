@@ -57,6 +57,7 @@ namespace Versioner
 
         public Version(uint? a, uint? b, uint? c, uint? d)
         {
+            _parts = new uint?[4];
             A = a;
             B = b;
             C = c;
@@ -118,8 +119,8 @@ namespace Versioner
 
 
         /// <summary>
-        ///  2.2.2.2 (1.1.1.1) -> 2.2.2.2
-        ///  #.#.2.2 (1.1.1.1) -> 1.1.2.2
+        ///  2.2.2.2 (1.1.1.1) -> 2.2.2.2 <br/>
+        ///  #.#.2.2 (1.1.1.1) -> 1.1.2.2 <br/>
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -128,14 +129,28 @@ namespace Versioner
             if (!IsMask)
                 return (Version)MemberwiseClone();
             
-            var inputVersion = new Version(input);
+            var output = new Version(input);
+            intApplyTo(output);
+            return output;
+        }
 
+        public Version ApplyTo(Version input)
+        {
+            if (!IsMask)
+                return (Version)MemberwiseClone();
+
+            var output = (Version)input.MemberwiseClone();
+            intApplyTo(output);
+            return output;
+        }
+
+        private void intApplyTo(Version input)
+        {
             for (int i = 0; i < _parts.Length; i++)
             {
-                var part = _parts[i];
-                if (part != null)
+                if (_parts[i] != null)
                 {
-                    inputVersion
+                    input[i] = _parts[i];
                 }
             }
         }
