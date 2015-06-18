@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Versioner.Handlers;
 
 namespace Versioner
 {
@@ -66,7 +67,7 @@ namespace Versioner
                 return;
             }
 
-            Console.WriteLine("Searching strings in project(s) folders");
+            new Runner(_options).Run();
         }
 
         private static T GetAttribute<T>() where T : Attribute
@@ -162,45 +163,54 @@ namespace Versioner
 
             if (!options.ReadMode)
             {
-                if (String.IsNullOrWhiteSpace(input.VersionMask))
+                try
                 {
-                    Console.WriteLine("Version mask should be provided for 'read' execution mode");
+                    options.VersionMask = new Version(input.VersionMask);
+                }
+                catch (ArgumentException aex)
+                {
+                    Console.WriteLine(aex.Message);
                     return false;
                 }
+            }
+            return true;
+        }
+    }
 
-                var stringParts = input.VersionMask.Split('.').ToList();
-                if (stringParts.Count != 4)
-                {
-                    Console.WriteLine("Version mask should in format 'a.b.c.d' where each letter stands for positive number or #");
-                    return false;
-                }
+    internal class Runner
+    {
+        private Options _options;
 
-                var errors = new StringBuilder();
-                var numberParts = new uint?[4];
-                for (int i = 0; i < stringParts.Count; i++)
+        public Runner(Options options)
+        {
+            _options = options;
+        }
+
+        public void Run()
+        {
+            Lo.Details("Searching strings in project(s) folders");
+            foreach (var handler in GetHandlers())
+            {
+                if (handler.CanHandle(_options.FilePath))
                 {
-                    var part = stringParts[i];
-                    if (part == "#")
-                        continue;
-                    uint number;
-                    if (!uint.TryParse(part, out number))
+                    handler.Init(_options.FilePath);
+                    if (_options.ReadMode)
                     {
-                        errors.AppendFormat("Version part '{0}' cannot be parsed neither to positive number nor to #", part);
-                        errors.AppendLine();
+                        handler.FetchVersion();
                     }
                     else
                     {
-                        numberParts[i] = number;
+                        handler.UpdateVersion(_options.VersionMask);
                     }
                 }
-                if (errors.Length > 0)
-                {
-                    Console.WriteLine(errors.ToString());
-                    return false;
-                }
-                options.VersionMask = new Version(numberParts);
             }
-            return true;
+        }
+
+        private static IEnumerable<IVersioner> GetHandlers()
+        {
+            yield return new CsharpVersioner();
+            yield return new DroidVersioner();
+            yield return new TouchVersioner();
         }
     }
 }
