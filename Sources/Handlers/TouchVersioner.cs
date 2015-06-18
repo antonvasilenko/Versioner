@@ -6,10 +6,6 @@ namespace Versioner.Handlers
 {
     public class TouchVersioner : IVersioner
     {
-        private string _filePath;
-        private XDocument _xDoc;
-
-
         public bool CanHandle(string filePath)
         {
             return false;
@@ -17,14 +13,12 @@ namespace Versioner.Handlers
 
         public void Init(string filePath)
         {
-            _filePath = filePath;
-            _xDoc = XDocument.Load(_filePath);
+            throw new NotImplementedException();
         }
 
-        public string FetchVersionText()
+        public Version FetchVersion()
         {
-            var textValue = _xDoc.Root.Attribute("android:versionName").Value;
-
+            throw new NotImplementedException();
         }
 
         public void UpdateVersion(Version version)

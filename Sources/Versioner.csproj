@@ -42,10 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeAnnotations.cs" />
-    <Compile Include="Service\TouchVersioner.cs" />
-    <Compile Include="Service\DroidVersioner.cs" />
-    <Compile Include="Service\CsharpVersioner.cs" />
-    <Compile Include="Service\IVersioner.cs" />
+    <Compile Include="Handlers\TouchVersioner.cs" />
+    <Compile Include="Handlers\DroidVersioner.cs" />
+    <Compile Include="Handlers\CsharpVersioner.cs" />
+    <Compile Include="Handlers\IVersioner.cs" />
     <Compile Include="Lo.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
