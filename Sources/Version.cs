@@ -33,6 +33,18 @@ namespace Versioner
             set { _parts[3] = value; }
         }
 
+        public uint? this[int index]
+        {
+            get { return _parts[index]; }
+            set { _parts[index] = value; }
+        }
+
+        public bool IsMask
+        {
+            get { return _parts.Any(p => p == null); }
+        }
+
+
         public Version(uint?[] parts)
         {
             if (parts == null)
@@ -56,7 +68,7 @@ namespace Versioner
             string error;
             if (!Parse(versionMask, out error))
             {
-                throw new ArgumentException("Wrong version mask format. " + error);
+                throw new ArgumentException(string.Format("Mask {0} cannot be parsed. {1}", versionMask, error));
             }
         }
 
@@ -101,6 +113,31 @@ namespace Versioner
             error = null;
             _parts = numberParts;
             return true;
+        }
+
+
+
+        /// <summary>
+        ///  2.2.2.2 (1.1.1.1) -> 2.2.2.2
+        ///  #.#.2.2 (1.1.1.1) -> 1.1.2.2
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Version ApplyTo(string input)
+        {
+            if (!IsMask)
+                return (Version)MemberwiseClone();
+            
+            var inputVersion = new Version(input);
+
+            for (int i = 0; i < _parts.Length; i++)
+            {
+                var part = _parts[i];
+                if (part != null)
+                {
+                    inputVersion
+                }
+            }
         }
 
         public override string ToString()

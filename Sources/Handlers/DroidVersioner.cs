@@ -27,16 +27,25 @@ namespace Versioner.Handlers
 
         public Version FetchVersion()
         {
-            var attr = _xDoc.Root.Attribute(_androidNamespace + "versionName");
+            var attr = GetVersionAttr();
             if (attr == null) return null;
             
             return new Version(attr.Value);
-
         }
 
         public void UpdateVersion(Version version)
         {
-            throw new NotImplementedException();
+            var attr = GetVersionAttr();
+            if (attr == null)
+            {
+                var newVersion = version.ApplyTo(attr.Value); 
+                attr.SetValue(version);
+            }
+        }
+
+        private XAttribute GetVersionAttr()
+        {
+            return _xDoc.Root.Attribute(_androidNamespace + "versionName");
         }
 
         public void Dispose()
