@@ -52,28 +52,34 @@ namespace Versioner
             {
                 Lo.Verbosity = _verbosity;
             }
-            Lo.Log("Versioner ({0})\n", Assembly.GetExecutingAssembly().GetName().Version);
-            Lo.Log("Copyright antonv 2015\n");
+            
 
             if (!analyzeRes || _userInput.ShowHelp)
             {
-                Console.WriteLine();
-                Console.WriteLine("Usage: Versioner --file:\"C:\\work\\AssemblyInfo.cs\"  --read --quiet");
-                Console.WriteLine("Usage: Versioner --file:\"C:\\work\\info.plist\"  --update --normal");
-                Console.WriteLine("Usage: Versioner --file:\"C:\\work\\android.manifest\"  --update --normal");
+                Lo.Log("Versioner ({0})\n", Assembly.GetExecutingAssembly().GetName().Version);
+                Lo.Details("Copyright antonv 2015\n\n");
+
+                Console.WriteLine(@"Usage: Versioner --file:""C:\work\AssemblyInfo.cs""  --read --quiet");
+                Console.WriteLine(@"Usage: Versioner --file:""C:\work\info.plist""  --update --normal");
+                Console.WriteLine(@"Usage: Versioner --file:""C:\work\android.manifest""  --update --normal");
+                
                 Console.WriteLine();
                 options.WriteOptionDescriptions(Console.Out);
+                Console.WriteLine();
+                Lo.Log("For using versioner in pipelines consider use verbosity level '{0}' to return result only", Verbosity.Data);
                 return;
             }
 
             try
             {
                 new Runner(_options).Run();
+                Environment.Exit(0);
             }
             catch (Exception ex)
             {
                 Lo.Log("Runner execution error: {0}-{1}", ex.GetType().Name, ex.Message);
                 Lo.Details("Stack Trace: {0}", ex.StackTrace);
+                Environment.Exit(1);
             }
         }
 
@@ -144,10 +150,6 @@ namespace Versioner
                 return false;
             }
             _verbosity = (Verbosity)pos;
-            if (_verbosity != Verbosity.Data)
-            {
-                Lo.Log("For using versioner in pipelines consider use verbosity level '{0}' to return result only", Verbosity.Data);
-            }
 
             if (String.IsNullOrWhiteSpace(input.Mode))
             {

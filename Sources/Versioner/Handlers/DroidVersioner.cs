@@ -40,8 +40,11 @@ namespace Versioner.Handlers
             var attr = GetRootAttr("versionName");
             if (attr != null)
             {
+                var oldVersionText = attr.Value;
                 var newVersion = versionMask.ApplyTo(attr.Value);
                 attr.SetValue(newVersion);
+
+                Lo.Details("VersionName updated from {0} to {1}\n", oldVersionText, newVersion);
 
                 var attrCode = GetRootAttr("versionCode");
                 if (attrCode != null)
@@ -49,10 +52,14 @@ namespace Versioner.Handlers
                     // additionally put 'c' part from string versionName to versionCode
                     // 'c' usually stands for revision; droid versionCode should be unique
                     // so the mathc each other perfectly
+                    var oldAttrCode = attrCode.Value;
                     attrCode.SetValue(newVersion.C.ToString());
+                    Lo.Details("versionCode updated from {0} to {1}\n", oldAttrCode, attrCode.Value);
                 }
+                _xDoc.Save(_filePath, SaveOptions.None);
+                
             }
-            _xDoc.Save(_filePath, SaveOptions.None);
+            
         }
 
         private XAttribute GetRootAttr(string name)

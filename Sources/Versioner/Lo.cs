@@ -11,7 +11,7 @@ namespace Versioner
         public static void Data(string template, params object[] args)
         {
             if(CanWrite(Verbosity, Verbosity.Data))
-                Console.Write(template, args);
+                Console.WriteLine(template, args);
         }
 
         [StringFormatMethod("template")]

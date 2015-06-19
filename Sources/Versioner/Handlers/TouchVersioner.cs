@@ -14,6 +14,8 @@ namespace Versioner.Handlers
     /// </summary>
     public class TouchVersioner : IVersioner
     {
+        private const string BundleShortVersionKey = "CFBundleShortVersionString";
+        private const string BundleVersionKey = "CFBundleVersion";
         private string _filePath;
         private XDocument _xDoc;
 
@@ -34,17 +36,18 @@ namespace Versioner.Handlers
 
         public Version FetchVersion()
         {
-            var shortVersionString = GetStringValueElement("CFBundleShortVersionString");
+            var shortVersionString = GetStringValueElement(BundleShortVersionKey);
             if (shortVersionString == null || String.IsNullOrWhiteSpace(shortVersionString.Value))
-                throw new InvalidOperationException("CFBundleShortVersionString element should exist in " + _filePath);
+                throw new InvalidOperationException(string.Format("{0} element should exist in {1}", BundleShortVersionKey, _filePath));
 
-            var bundleVersion = GetStringValueElement("CFBundleVersion");
+            var bundleVersion = GetStringValueElement(BundleVersionKey);
             if (bundleVersion == null || String.IsNullOrWhiteSpace(bundleVersion.Value))
-                throw new InvalidOperationException("CFBundleVersion element should exist in " + _filePath);
+                throw new InvalidOperationException(string.Format("{0} element should exist in {1}", BundleVersionKey, _filePath));
+
             uint bundleVersionNumber;
             if (!uint.TryParse(bundleVersion.Value.Trim('\'', '.', ',', ' '), out bundleVersionNumber))
             {
-                throw new InvalidOperationException(string.Format("CFBundleVersion in {0} expected to be single number with no extra characters ", _filePath));
+                throw new InvalidOperationException(string.Format("{0} in {1} expected to be single number with no extra characters ", BundleVersionKey, _filePath));
             }
 
             var finalStringVersion = string.Join(".", shortVersionString.Value.Replace(',', '.').Trim('.', ' ', ','), bundleVersionNumber);
@@ -60,8 +63,8 @@ namespace Versioner.Handlers
 
         public void UpdateVersion(Version versionMask)
         {
-            var shortVersionElement = GetStringValueElement("CFBundleShortVersionString");
-            var bundleVersionElement = GetStringValueElement("CFBundleVersion");
+            var shortVersionElement = GetStringValueElement(BundleShortVersionKey);
+            var bundleVersionElement = GetStringValueElement(BundleVersionKey);
 
             if (shortVersionElement != null && !string.IsNullOrEmpty(shortVersionElement.Value) &&
                 bundleVersionElement != null && !string.IsNullOrEmpty(bundleVersionElement.Value))
@@ -74,8 +77,11 @@ namespace Versioner.Handlers
 
                 if (newVersion.ToString() != initialVersion)
                 {
+                    Lo.Details("{0} updated from {1} to {2}\n", BundleShortVersionKey, shortVersionElement.Value, newVersion.ToTouchShortVersion());
+                    Lo.Details("{0} updated from {1} to {2}\n", bundleVersionElement.Value, newVersion.ToTouchBundleVersion());
                     shortVersionElement.SetValue(newVersion.ToTouchShortVersion());
                     bundleVersionElement.SetValue(newVersion.ToTouchBundleVersion());
+
                 }
                 _xDoc.Save(_filePath, SaveOptions.None);
             }
