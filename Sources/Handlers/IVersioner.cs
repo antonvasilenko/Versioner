@@ -7,6 +7,6 @@ namespace Versioner.Handlers
 		bool CanHandle(string filePath);
 		void Init(string filePath);
 		Version FetchVersion();
-		void UpdateVersion(Version version);
+		void UpdateVersion(Version versionMask);
 	}
 }
