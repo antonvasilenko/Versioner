@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Versioner", "Versioner.csproj", "{423918C7-7216-4501-ABEC-937628888329}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Versioner", "Versioner\Versioner.csproj", "{423918C7-7216-4501-ABEC-937628888329}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Versioner.Tests", "Versioner.Tests\Versioner.Tests.csproj", "{A4DF6052-0A12-4FAA-AB83-20B6B57A8DA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{423918C7-7216-4501-ABEC-937628888329}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{423918C7-7216-4501-ABEC-937628888329}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{423918C7-7216-4501-ABEC-937628888329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4DF6052-0A12-4FAA-AB83-20B6B57A8DA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4DF6052-0A12-4FAA-AB83-20B6B57A8DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4DF6052-0A12-4FAA-AB83-20B6B57A8DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4DF6052-0A12-4FAA-AB83-20B6B57A8DA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

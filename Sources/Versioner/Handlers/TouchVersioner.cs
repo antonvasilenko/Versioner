@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Versioner.Extensions;
 
 namespace Versioner.Handlers
 {
@@ -82,20 +83,6 @@ namespace Versioner.Handlers
 
         public void Dispose()
         {
-        }
-    }
-
-
-    public static class VersionExtensions
-    {
-        public static string ToTouchShortVersion(this Version version)
-        {
-            return string.Format("{0}.{1}.{2}", version.A, version.B, version.C);
-        }
-
-        public static string ToTouchBundleVersion(this Version version)
-        {
-            return string.Format("{0}", version.D);
         }
     }
 }

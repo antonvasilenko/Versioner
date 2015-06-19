@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Versioner.Handlers;
 
 namespace Versioner
 {
@@ -53,7 +52,7 @@ namespace Versioner
             {
                 Lo.Verbosity = _verbosity;
             }
-            Lo.Log("Versioner\n");
+            Lo.Log("Versioner ({0})\n", Assembly.GetExecutingAssembly().GetName().Version);
             Lo.Log("Copyright antonv 2015\n");
 
             if (!analyzeRes || _userInput.ShowHelp)
@@ -67,12 +66,15 @@ namespace Versioner
                 return;
             }
 
-            new Runner(_options).Run();
-        }
-
-        private static T GetAttribute<T>() where T : Attribute
-        {
-            return typeof(Program).Assembly.GetCustomAttribute<T>();
+            try
+            {
+                new Runner(_options).Run();
+            }
+            catch (Exception ex)
+            {
+                Lo.Log("Runner execution error: {0}-{1}", ex.GetType().Name, ex.Message);
+                Lo.Details("Stack Trace: {0}", ex.StackTrace);
+            }
         }
 
         private static OptionSet PrepareOptionsParser(UserInput inputToFill)
@@ -174,44 +176,6 @@ namespace Versioner
                 }
             }
             return true;
-        }
-    }
-
-    internal class Runner
-    {
-        private Options _options;
-
-        public Runner(Options options)
-        {
-            _options = options;
-        }
-
-        public void Run()
-        {
-            Lo.Details("Searching strings in project(s) folders");
-            foreach (var handler in GetHandlers())
-            {
-                if (handler.CanHandle(_options.FilePath))
-                {
-                    handler.Init(_options.FilePath);
-                    if (_options.ReadMode)
-                    {
-                        var version = handler.FetchVersion();
-                        Lo.Data(version.ToString());
-                    }
-                    else
-                    {
-                        handler.UpdateVersion(_options.VersionMask);
-                    }
-                }
-            }
-        }
-
-        private static IEnumerable<IVersioner> GetHandlers()
-        {
-            yield return new CsharpVersioner();
-            yield return new DroidVersioner();
-            yield return new TouchVersioner();
         }
     }
 }
