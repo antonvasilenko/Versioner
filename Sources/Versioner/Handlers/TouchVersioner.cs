@@ -78,7 +78,7 @@ namespace Versioner.Handlers
                 if (newVersion.ToString() != initialVersion)
                 {
                     Lo.Details("{0} updated from {1} to {2}\n", BundleShortVersionKey, shortVersionElement.Value, newVersion.ToTouchShortVersion());
-                    Lo.Details("{0} updated from {1} to {2}\n", bundleVersionElement.Value, newVersion.ToTouchBundleVersion());
+                    Lo.Details("{0} updated from {1} to {2}\n", BundleVersionKey, bundleVersionElement.Value, newVersion.ToTouchBundleVersion());
                     shortVersionElement.SetValue(newVersion.ToTouchShortVersion());
                     bundleVersionElement.SetValue(newVersion.ToTouchBundleVersion());
 

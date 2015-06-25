@@ -14,7 +14,7 @@ namespace Versioner
 
         public void Run()
         {
-            Lo.Details("Searching strings in project(s) folders");
+            Lo.Details("Searching strings in project(s) folders\n");
             foreach (var handler in GetHandlers())
             {
                 if (handler.CanHandle(_options.FilePath))
