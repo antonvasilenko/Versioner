@@ -84,7 +84,7 @@ namespace Versioner
             var stringParts = versionMask.Split('.').ToList();
             if (stringParts.Count != 4)
             {
-                error = "Version mask should in format 'a.b.c.d' where each letter stands for positive number or #";
+                error = "Version mask should in format 'a.b.c.d' where each letter stands for positive number or # or *";
                 return false;
             }
 
@@ -93,12 +93,12 @@ namespace Versioner
             for (int i = 0; i < stringParts.Count; i++)
             {
                 var part = stringParts[i];
-                if (part == "#")
+                if (part == "#" || part == "*")
                     continue;
                 uint number;
                 if (!uint.TryParse(part, out number))
                 {
-                    errors.AppendFormat("Version part '{0}' cannot be parsed neither to positive number nor to #", part);
+                    errors.AppendFormat("Version part '{0}' cannot be parsed neither to positive number nor to # or *", part);
                     errors.AppendLine();
                 }
                 else

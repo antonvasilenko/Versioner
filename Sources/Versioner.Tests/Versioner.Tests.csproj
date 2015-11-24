@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSharpVersionerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="TestResources\CSharpRes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
