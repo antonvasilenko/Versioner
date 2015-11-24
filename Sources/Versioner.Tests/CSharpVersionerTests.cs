@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using Versioner.Handlers;
 
 namespace Versioner.Tests
@@ -71,6 +72,9 @@ namespace Versioner.Tests
             var mask = new Version(null, null, null, v1.D + 1);
             var vExpected = mask.ApplyTo(v1);
             versioner.UpdateVersion(mask);
+
+            Console.WriteLine(v1);
+            Console.WriteLine(vExpected);
 
             var versioner2 = new CsharpVersioner();
             versioner2.Init(res1Path);

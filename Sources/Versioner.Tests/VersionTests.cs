@@ -134,6 +134,19 @@ namespace Versioner.Tests
             Assert.AreEqual(verResult, newVer.ToString());
         }
 
+        [Test]
+        public void Clone_creates_independent_instance()
+        {
+            var v1 = new Version(1, 2, 3, 4);
+            var mask = new Version(null, null, null, 10);
+            var v2 = mask.ApplyTo(v1);
+
+            Assert.AreEqual("1.2.3.10", v2.ToString());
+            Assert.AreEqual(4, v1.D);
+            Assert.AreNotSame(v1,v2);
+
+        }
+
 
     }
 }

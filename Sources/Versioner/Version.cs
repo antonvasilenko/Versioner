@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Versioner
 {
-    public class Version
+    public class Version: ICloneable
     {
         private uint?[] _parts;
 
@@ -127,7 +127,7 @@ namespace Versioner
         public Version ApplyTo(string input)
         {
             if (!IsMask)
-                return (Version)MemberwiseClone();
+                return (Version)Clone();
             
             var output = new Version(input);
             intApplyTo(output);
@@ -137,9 +137,9 @@ namespace Versioner
         public Version ApplyTo(Version input)
         {
             if (!IsMask)
-                return (Version)MemberwiseClone();
+                return (Version)Clone();
 
-            var output = (Version)input.MemberwiseClone();
+            var output = (Version)input.Clone();
             intApplyTo(output);
             return output;
         }
@@ -159,6 +159,11 @@ namespace Versioner
         {
             List<string> textParts = _parts.Select(p => p == null ? "#" : p.ToString()).ToList();
             return string.Join(".", textParts);
+        }
+
+        public object Clone()
+        {
+            return new Version(A, B, C, D);
         }
     }
 }

@@ -37,8 +37,8 @@ namespace Versioner.Handlers
                 var oldVersion = new Version(parseResult.Groups[1].Value);
                 var newVersion = versionMask.ApplyTo(oldVersion);
                 _fileContent = _fileContent.Replace(parseResult.Groups[1].Value, newVersion.ToString());
-                Lo.Details("VersionName updated from {0} to {1}\n", oldVersion, newVersion);
                 File.WriteAllText(_filePath, _fileContent);
+                Lo.Details("AssemblyVersion updated from {0} to {1}\n", oldVersion, newVersion);
             }
         }
 
